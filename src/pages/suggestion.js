@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getSuggestedProfiles } from '../services/firebase';
 import { SuggestionContainer, SuggestedText } from './styles/suggestion';
 import ProfileComponent from './suggestedProfile';
-const Suggestion = ({userId, following, loggedInUserDocId }) => {
+import * as api from '../api/index';
+const Suggestion = ({ userId, following, loggedInUserDocId }) => {
   const [profiles, setProfile] = useState(null);
   const token = localStorage.getItem('token');
+  const [trigger, setTrigger] = useState(following);
   useEffect(() => {
     const suggestedProfiles = async () => {
-      const response = await getSuggestedProfiles(token, following);
-      setProfile(response.data.profile);
+      const response = await api.SuggestProfile(following, token);
+      setProfile(response.data);
     };
     if (userId) {
       suggestedProfiles();
     }
-  }, [userId]);
+  }, [following, trigger, token, userId]);
 
   return !profiles ? (
     <p>Loading....</p>
@@ -24,12 +25,15 @@ const Suggestion = ({userId, following, loggedInUserDocId }) => {
       {profiles.map((profile) => {
         return (
           <ProfileComponent
-            key={profile.docId}
-            profileDocId={profile.docId}
+            avatar={profile.avatar}
+            key={profile._id}
+            profileDocId={profile._id}
             username={profile.username}
-            profileId={profile.userId}
+            profileId={profile._id}
             userId={userId}
             loggedInUserDocId={loggedInUserDocId}
+            trigger={trigger}
+            setTrigger={setTrigger}
           />
         );
       })}

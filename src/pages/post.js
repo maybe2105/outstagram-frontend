@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   PostContainer,
   PostUser,
@@ -29,6 +29,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineOutlined';
 import CommentComponent from '../components/comment';
 import * as api from '../api/index';
+import noImg from './styles/no-img.jpg';
 const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(4),
@@ -46,25 +47,28 @@ const useStyles = makeStyles((theme) => ({
 const Post = ({ content }) => {
   const [post, setPost] = useState(content);
   const classes = useStyles();
-  const timeCreated = formatDistance(
-    new Date(),
-    new Date(content.createdAt * 1000)
-  );
+  const timeCreated = formatDistance(new Date(), new Date(content.createAt));
   const token = localStorage.getItem('token');
   const handlePostComment = () => {};
   const handleReact = async () => {
     const res = await api.PostReact(post._id, token);
     setPost({ ...res.data.post, userLikedPhoto: !post.userLikedPhoto });
   };
+  const [avatar, setAvatar] = useState(null);
+  useEffect(() => {
+    const getAvatar = async (userid) => {
+      try {
+        const result = await api.getUserAvatar(userid);
+        result.avatar === '' ? setAvatar(noImg) : setAvatar(result.avatar);
+      } catch (err) {}
+    };
+    getAvatar(content.userId);
+  }, [content]);
   return (
     <PostContainer>
       <PostUser>
-        <Avatar
-          alt='avatar'
-          className={classes.small}
-          src={`/images/avatars/${post.username}.jpg`}
-        />
-        <PostUserName>{post.username}</PostUserName>
+        <Avatar alt='avatar' className={classes.small} src={avatar} />
+        <PostUserName>{content.username}</PostUserName>
       </PostUser>
       <PostBody>
         <PostImage src={post.photoSrcs[0]} atl={post.username} />
@@ -85,7 +89,7 @@ const Post = ({ content }) => {
         </PostLike>
         <CaptionSection>
           <CommentName>{post.username}</CommentName>
-          <Comment>{post.caption}</Comment>
+          <Comment>{post.captions}</Comment>
         </CaptionSection>
         <PostCommentSection>
           {post.comments.map((item, index) => {

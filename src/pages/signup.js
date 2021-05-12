@@ -20,9 +20,8 @@ import {
   LoginStyleText,
   LoginStyleField,
 } from './styles/login';
-import * as api from '../api/index'
-import UserContext from '../context/user'
-import * as ROUTE from '../constants/route';
+import * as api from '../api/index';
+import UserContext from '../context/user';
 const SignUp = () => {
   const history = useHistory();
   const usercontext = useContext(UserContext);
@@ -31,26 +30,24 @@ const SignUp = () => {
   const [fullName, setfullName] = useState('');
   const [username, setName] = useState('');
   const [err, setErr] = useState('');
-  const isInvalid =
-    email === '' || password === '' || username || fullName;
+  const isInvalid = email === '' || password === '' || username || fullName;
   useEffect(() => {
     document.title = 'Login Instagram';
   }, []);
   const handleSignup = async (event) => {
     event.preventDefault();
-    const user ={email, fullName, username, password};
+    const user = { email, fullName, username, password };
     console.log(user);
-    try{
+    try {
       const result = await api.signUp(user);
       console.log(result);
       usercontext.setUser(result.data.user);
       console.log(user);
       localStorage.setItem('loggedInUser', JSON.stringify(result.data.user));
-      localStorage.setItem('token',result.data.token);
+      localStorage.setItem('token', result.data.token);
       history.push('/');
       console.log(user);
-    }
-    catch (error) { 
+    } catch (error) {
       setEmail('');
       setPassword('');
       setfullName('');

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import {
   SuggestedAvatar,
@@ -9,11 +8,10 @@ import {
   Suggestedforyou,
   SuggestWrap,
 } from './styles/suggestion';
-import {
-  updateLoggedInUserFollowing,
-  updateFollowedUserFollower,
-} from '../services/firebase';
+import * as api from '../api/index';
+
 import { makeStyles } from '@material-ui/core/styles';
+import UserContext from '../context/user';
 import { useState } from 'react';
 const useStyles = makeStyles((theme) => ({
   small: {
@@ -29,27 +27,33 @@ const ProfileComponent = ({
   profileDocId,
   username,
   profileId,
+  avatar,
   userId,
   loggedInUserDocId,
+  trigger,
+  setTrigger,
 }) => {
   const classes = useStyles();
+  const { currentUser, updateUser } = useContext(UserContext);
+  const token = localStorage.getItem('token');
   const [followed, setFollowed] = useState(false);
+  const updateFollowing = (followings) => {
+    updateUser({ ...currentUser.user, followings: followings });
+  };
   async function handleFollowUser() {
-    setFollowed(true);
-    console.log(loggedInUserDocId);
-    await updateLoggedInUserFollowing(loggedInUserDocId, profileId, false);
-    await updateFollowedUserFollower(profileDocId, userId, false);
-    // ^ dùng để update danh sách theo dõi của người dùng đang đăng nhập hiện tại
-    // v dùng để update danh sách theo dõi của đối tượng mà người dùng hiện tại đang tương tác VD: +1 follower hay -1 fx    ollower
+    await api
+      .FollowUser(profileDocId, token)
+      .then((res) => {
+        console.log('before follow', currentUser);
+        updateFollowing(res.data.followings);
+        console.log('after follow', currentUser);
+      })
+      .then(() => setFollowed(true));
   }
   return !followed ? (
     <SuggestedProfile>
       <SuggestedAvatar>
-        <Avatar
-          className={classes.small}
-          alt={username}
-          src={`/images/avatars/${username}.jpg`}
-        />
+        <Avatar className={classes.small} alt={username} src={avatar} />
       </SuggestedAvatar>
       <SuggestWrap>
         <SuggestedUserName>{username}</SuggestedUserName>

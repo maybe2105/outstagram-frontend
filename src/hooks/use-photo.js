@@ -1,24 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { getPhotos } from '../services/services';
+import { useHistory } from 'react-router-dom';
+import * as ROUTE from '../constants/route';
+import UserContext from '../context/user';
 export default function usePhotos(user) {
+  const { updateUser } = useContext(UserContext);
   const [photos, setPhotos] = useState(null);
+  const history = useHistory();
   useEffect(() => {
     async function getTimelinePhotos() {
       // does the user actually follow people
       if (user?.followings?.length > 0) {
-        const followedUserPhotos = await getPhotos(
-          user.username,
-          user.followings
-        );
-        // re-arrange array to be newest photos first by dateCreated
-        // followedUserPhotos.sort((a, b) => b.dateCreated - a.dateCreated);
-        setPhotos(followedUserPhotos);
-      }else{
+        try {
+          const followedUserPhotos = await getPhotos(
+            user.username,
+            user.followings
+          );
+          // re-arrange array to be newest photos first by dateCreated
+          if (followedUserPhotos?.length > 0) {
+            followedUserPhotos.sort(
+              (a, b) => b.createAt.toString() - a.createAt.toString()
+            );
+          }
+          setPhotos(followedUserPhotos);
+        } catch (err) {
+          if (err.response?.status === 401) {
+            console.log('Unauthorized');
+            //  alert('Vui lòng đăng nhập lại');
+            localStorage.removeItem('token');
+            localStorage.removeItem('loggedInUser');
+            updateUser(null);
+            console.log(updateUser);
+            history.push('/login');
+          }
+
+          console.log(err);
+        }
+      } else {
         setPhotos([]);
       }
     }
 
     getTimelinePhotos();
-  }, [user]);
+  }, [user, updateUser]);
   return { photos };
 }

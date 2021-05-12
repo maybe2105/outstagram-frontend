@@ -31,6 +31,7 @@ export const SuggestedText = styled.p`
   font-size: 12;
   padding-left: 12px;
   color: #666666;
+  padding-top: 12px;
   padding-bottom: 12px;
   line-height: 16px;
   margin-block-start: 0;

@@ -1,17 +1,17 @@
 import { IconButton, InputBase } from '@material-ui/core';
 import React, { useContext } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
-import FirebaseContext from '../context/firebase';
+
 import * as api from '../api/index';
 import * as ROUTE from '../constants/route';
 import { createStyles, fade, makeStyles } from '@material-ui/core/styles';
+import { Avatar } from '@material-ui/core';
 import {
   DashboardLogo,
   DashboardNav,
   DashboardNavItem,
 } from './styles/dashboard';
 import { Link, useHistory } from 'react-router-dom';
-import { Avatar } from '@material-ui/core';
 import logo from './styles/logo.png';
 import ExploreRoundedIcon from '@material-ui/icons/ExploreRounded';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
@@ -23,7 +23,6 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-import LoggedInUserContext from '../context/logged-in-user';
 import UserContext from '../context/user';
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -89,11 +88,10 @@ const useStyles = makeStyles((theme) =>
     small: { width: theme.spacing(3), height: theme.spacing(3) },
   })
 );
-const Navbar = () => {
+const Navbar = ({ user }) => {
   const history = useHistory();
   const classes = useStyles();
-  const { setUser } = useContext(UserContext);
-  const { user } = useContext(LoggedInUserContext);
+  const { updateUser } = useContext(UserContext);
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const handleToggle = () => {
@@ -121,15 +119,22 @@ const Navbar = () => {
 
     prevOpen.current = open;
   }, [open]);
-  return (
+  console.log('navbar');
+  return user ? (
     <DashboardNav>
       <DashboardLogo>
-        <img
-          src={logo}
-          style={{ maxWidth: '100%', maxHeight: '100%' }}
-          alt='logo'
-          onClick={() => <Link to='/'></Link>}
-        />
+        <Link to='/'>
+          <img
+            src={logo}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              marginTop: '4px',
+              cursor: 'pointer',
+            }}
+            alt='logo'
+          />
+        </Link>
       </DashboardLogo>
       <div className={classes.maxSearch}>
         <div className={classes.search}>
@@ -193,7 +198,10 @@ const Navbar = () => {
                     id='menu-list-grow'
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      {' '}
+                      <Link to={`/${user.username}`}>Profile</Link>
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         localStorage.removeItem('loggedInUser');
@@ -201,7 +209,7 @@ const Navbar = () => {
                         api
                           .logOut()
                           .then(
-                            setUser({ user: null }),
+                            updateUser({ user: null }),
                             history.push(ROUTE.LOGIN)
                           );
                       }}
@@ -211,10 +219,7 @@ const Navbar = () => {
                           localStorage.removeItem('token');
                           api
                             .logOut()
-                            .then(
-                              setUser({ user: null }),
-                              history.push(ROUTE.LOGIN)
-                            );
+                            .then(updateUser(null), history.push(ROUTE.LOGIN));
                         }
                       }}
                     >
@@ -228,7 +233,7 @@ const Navbar = () => {
         </Popper>
       </DashboardNavItem>
     </DashboardNav>
-  );
+  ) : null;
 };
 
-export default Navbar;
+export default React.memo(Navbar);

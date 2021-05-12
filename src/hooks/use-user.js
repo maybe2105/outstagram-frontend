@@ -1,20 +1,23 @@
-import { useState, useContext, useEffect } from 'react';
-import LoggedInUserContext from '../context/logged-in-user';
-import { getUserByUserId } from '../services/firebase';
-import * as api from '../api/index';
+import { useState, useEffect } from 'react';
 const useUser = (user) => {
-  const [activeUser, setActiveUser] = useState({});
   const [loggedInUser, setloggedInUser] = useState(
     JSON.parse(localStorage.getItem('loggedInUser'))
   );
+  const [activeUser, setActiveUser] = useState(loggedInUser);
   //user
   useEffect(() => {
+    if (user?._id) {
+      setActiveUser(user);
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      return { user: activeUser };
+    }
     if (loggedInUser) {
       setActiveUser(loggedInUser);
-    } else {
-      setActiveUser(user);
     }
-  }, [user]);
+    if (!loggedInUser) {
+      setActiveUser(null);
+    }
+  }, [user, loggedInUser]);
 
   return { user: activeUser };
 };

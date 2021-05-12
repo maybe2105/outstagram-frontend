@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 import * as ROUTES from '../constants/route';
 
-export default function ProtectedRoute({ value, children, ...rest }) {
+export default function ProtectedRoute({ currentUser, children, ...rest }) {
   return (
     <Route
       {...rest}
       render={({ location }) => {
-        if (value.user !== null) {
-          return React.cloneElement(children, value.user);
+        if (currentUser) {
+          return React.cloneElement(children, currentUser);
         }
 
-        if (value.user == null) {
+        if (!currentUser) {
           return (
             <Redirect
               to={{
@@ -28,12 +28,12 @@ export default function ProtectedRoute({ value, children, ...rest }) {
     />
   );
 }
-export function ProtectedLogin({ value, children, ...rest }) {
+export function ProtectedLogin({ currentUser, children, ...rest }) {
   return (
     <Route
       {...rest}
       render={({ location }) => {
-        if (value.user !== null) {
+        if (currentUser) {
           return (
             <Redirect
               to={{
@@ -43,8 +43,8 @@ export function ProtectedLogin({ value, children, ...rest }) {
             />
           );
         }
-        if (value.user == null) {
-          return React.cloneElement(children, value.user);
+        if (!currentUser) {
+          return React.cloneElement(children, currentUser);
         }
 
         return null;
@@ -52,12 +52,12 @@ export function ProtectedLogin({ value, children, ...rest }) {
     />
   );
 }
-export function ProtectedSignUp({ value, children, ...rest }) {
+export function ProtectedSignUp({ currentUser, children, ...rest }) {
   return (
     <Route
       {...rest}
       render={({ location }) => {
-        if (value.user !== null) {
+        if (currentUser) {
           return (
             <Redirect
               to={{
@@ -67,8 +67,8 @@ export function ProtectedSignUp({ value, children, ...rest }) {
             />
           );
         }
-        if (value.user == null) {
-          return React.cloneElement(children, value.user);
+        if (!currentUser) {
+          return React.cloneElement(children, currentUser);
         }
 
         return null;

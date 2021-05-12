@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = () => {
   const classes = useStyles();
   const { user } = useContext(LoggedInUserContext);
-  return (
+  return user ? (
     <SidebarContainer>
       <SidebarUser>
         <SidebarAvatar>
@@ -43,12 +43,12 @@ const Sidebar = () => {
         </SidebarName>
       </SidebarUser>
       <Suggestion
-        userId={user.userId}
-        following={user.following}
+        userId={user._id}
+        following={user.followings}
         loggedInUserDocId={user.docId}
       />
     </SidebarContainer>
-  );
+  ) : null;
 };
 
 export default Sidebar;

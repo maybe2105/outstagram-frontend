@@ -41,14 +41,11 @@ const Login = () => {
     if (!checkValid(isInvalid)) {
       try {
         const { data } = await api.login(userEmail, userPassword);
-        console.log(data);
-        contextuser.setUser(data.user);
+        contextuser.updateUser(data.user);
         localStorage.setItem('loggedInUser', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
         history.push('/');
       } catch (err) {
-        setEmail('');
-        setPassword('');
         console.log(err);
         setErr(err.message);
       }
@@ -113,6 +110,7 @@ const Login = () => {
                   size='small'
                   label-color='#fff'
                   margin='none'
+                  autoComplete='on'
                   onChange={(event) => {
                     setPassword(event.target.value);
                     if (!checkValid(isInvalid)) {

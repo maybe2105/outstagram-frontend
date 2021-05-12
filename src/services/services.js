@@ -1,5 +1,4 @@
 import * as api from '../api/index';
-import axios from 'axios';
 export async function getPhotos(currentUsername, followings) {
   // [5,4,2] => following
   const token = localStorage.getItem('token');

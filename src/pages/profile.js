@@ -15,7 +15,7 @@ import {
   ProfileNavContainer,
   ProfileNavItem,
   ProfileContent,
-} from './styles/profile';
+} from '../components/styles/profile';
 import * as api from '../api/index';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Avatar } from '@material-ui/core';
@@ -35,17 +35,28 @@ const Profile = ({ currentName }) => {
   const classes = useStyles();
   const { currentUser } = useContext(UserContext);
   const [user, setUser] = useState(null);
-
+  const [posts, setPosts] = useState(null);
   useEffect(() => {
-    const getUser = async (id) => {
-      const result = await api.getUserByUserId(id.toString());
-      return result.data;
+    const getUserPosts = async (id) => {
+      try {
+        const result = await api.getUserPosts(id);
+        console.log('user posts', result);
+        return result;
+      } catch (err) {
+        console.log(err);
+      }
     };
-    id == currentUser.user.username
-      ? setUser(currentUser.user)
-      : setUser(getUser(id));
+    const getUser = async (id) => {
+      try {
+        const result = await api.getUserByUserId(id.toString());
+        setUser(result.data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    id == currentUser.user.username ? setUser(currentUser.user) : getUser(id);
+    setPosts(getUserPosts(user?._id));
   }, [id]);
-  console.log(user);
   return user ? (
     <ProfileContainer>
       <ProfileBody>
@@ -57,9 +68,9 @@ const Profile = ({ currentName }) => {
             <ProfileName>{user.username}</ProfileName>
           </ProfileNameContainer>
           <ListInfo>
-            <Info>{user.postIds.length} bài viết</Info>
-            <Info>{user.followers.length} người theo dõi</Info>
-            <Info>Đang theo dõi {user.followings.length} người dùng</Info>
+            <Info>{user.postIds?.length} bài viết</Info>
+            <Info>{user.followers?.length} người theo dõi</Info>
+            <Info>Đang theo dõi {user.followings?.length} người dùng</Info>
           </ListInfo>
           <FullNameContainer>
             <Fullname>{user.fullName}</Fullname>

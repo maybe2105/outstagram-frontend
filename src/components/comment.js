@@ -4,7 +4,7 @@ import {
   PostComment,
   CommentName,
   Comment,
-} from '../pages/styles/post';
+} from './styles/post';
 const CommentComponent = ({ username, comment }) => {
   return (
     <PostComment>

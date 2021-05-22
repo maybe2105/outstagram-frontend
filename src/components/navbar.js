@@ -10,9 +10,9 @@ import {
   DashboardLogo,
   DashboardNav,
   DashboardNavItem,
-} from './styles/dashboard';
+} from '../pages/styles/dashboard';
 import { Link, useHistory } from 'react-router-dom';
-import logo from './styles/logo.png';
+
 import ExploreRoundedIcon from '@material-ui/icons/ExploreRounded';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
@@ -125,7 +125,7 @@ const Navbar = ({ user }) => {
       <DashboardLogo>
         <Link to='/'>
           <img
-            src={logo}
+            src={process.env.PUBLIC_URL + '/logo.png'}
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
@@ -236,4 +236,4 @@ const Navbar = ({ user }) => {
   ) : null;
 };
 
-export default React.memo(Navbar);
+export default Navbar;

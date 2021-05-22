@@ -29,7 +29,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineOutlined';
 import CommentComponent from '../components/comment';
 import * as api from '../api/index';
-import noImg from './styles/no-img.jpg';
 const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(4),
@@ -59,7 +58,9 @@ const Post = ({ content }) => {
     const getAvatar = async (userid) => {
       try {
         const result = await api.getUserAvatar(userid);
-        result.avatar === '' ? setAvatar(noImg) : setAvatar(result.avatar);
+        result.avatar === ''
+          ? setAvatar(process.env.PUBLIC_URL + 'no-img.jpg')
+          : setAvatar(result.avatar);
       } catch (err) {}
     };
     getAvatar(content.userId);

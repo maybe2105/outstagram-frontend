@@ -54,3 +54,8 @@ export const FollowUser = async (targetId, token) => {
     }
   );
 };
+export const getUserPosts = async (userId) => {
+  const url = '/p/' + userId;
+  const result = await API.get(url);
+  console.log(result);
+};

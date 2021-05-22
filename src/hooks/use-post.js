@@ -3,7 +3,7 @@ import { getPhotos } from '../services/services';
 import { useHistory } from 'react-router-dom';
 import * as ROUTE from '../constants/route';
 import UserContext from '../context/user';
-export default function usePhotos(user) {
+export default function usePost(user) {
   const { updateUser } = useContext(UserContext);
   const [photos, setPhotos] = useState(null);
   const history = useHistory();
@@ -22,15 +22,13 @@ export default function usePhotos(user) {
               (a, b) => b.createAt.toString() - a.createAt.toString()
             );
           }
+          debugger;
           setPhotos(followedUserPhotos);
         } catch (err) {
           if (err.response?.status === 401) {
             console.log('Unauthorized');
-            //  alert('Vui lòng đăng nhập lại');
-            localStorage.removeItem('token');
             localStorage.removeItem('loggedInUser');
             updateUser(null);
-            console.log(updateUser);
             history.push('/login');
           }
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import Navbar from '../components/navbar';
-import Sidebar from './sidebar';
+import Sidebar from '../components/sidebar';
 import useUser from '../hooks/use-user';
-import Timeline from './timeline';
+import Timeline from '../components/timeline';
 import { DashboardContainer } from './styles/dashboard';
 import LoggedInUserContext from '../context/logged-in-user';
 import usePost from '../hooks/use-post';

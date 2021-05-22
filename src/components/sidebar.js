@@ -9,8 +9,8 @@ import {
   SidebarUserName,
   SidebarUserFullname,
   SidebarName,
-} from '../components/styles/sidebar';
-import Suggestion from '../components/suggestion';
+} from './styles/sidebar';
+import Suggestion from './suggestion';
 import LoggedInUserContext from '../context/logged-in-user';
 const useStyles = makeStyles((theme) => ({
   small: {

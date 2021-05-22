@@ -5,8 +5,8 @@ import {
   TimelineContainer,
   SkeletonContainer,
   SkeletonMargin,
-} from '../components/styles/post';
-import Post from '../components/post';
+} from './styles/post';
+import Post from './post';
 const Timeline = React.memo(({ posts }) => {
   return !posts ? (
     <SkeletonContainer>

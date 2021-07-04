@@ -6,6 +6,7 @@ import {
   Comment,
 } from './styles/post';
 const CommentComponent = ({ username, comment }) => {
+  console.log('CommentComponent ', username, comment);
   return (
     <PostComment>
       <CommentName>{username}</CommentName>

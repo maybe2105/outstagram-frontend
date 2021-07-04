@@ -2,7 +2,6 @@ import styled from 'styled-components/macro';
 export const TimelineContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
 `;
 export const PostContainer = styled.div`
   height: auto;

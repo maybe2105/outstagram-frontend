@@ -53,6 +53,7 @@ const Post = ({ content }) => {
     const res = await api.PostReact(post._id, token);
     setPost({ ...res.data.post, userLikedPhoto: !post.userLikedPhoto });
   };
+  console.log('PostComment ', post.comments);
   const [avatar, setAvatar] = useState(null);
   useEffect(() => {
     const getAvatar = async (userid) => {
@@ -97,7 +98,7 @@ const Post = ({ content }) => {
             return (
               <CommentComponent
                 key={index}
-                username={item.displayName}
+                username={item.username}
                 comment={item.comment}
               />
             );

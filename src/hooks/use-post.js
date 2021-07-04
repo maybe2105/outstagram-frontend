@@ -22,7 +22,6 @@ export default function usePost(user) {
               (a, b) => b.createAt.toString() - a.createAt.toString()
             );
           }
-          debugger;
           setPhotos(followedUserPhotos);
         } catch (err) {
           if (err.response?.status === 401) {

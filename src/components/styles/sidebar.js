@@ -1,11 +1,10 @@
 import styled from 'styled-components/macro';
 export const SidebarContainer = styled.div`
   display: flex;
-  position: fixed;
   width: 287px;
+  padding-left: 20px;
   height: 100vh;
   top: 88px;
-  left: 815px;
   flex-direction: column;
 `;
 export const SidebarUser = styled.div`

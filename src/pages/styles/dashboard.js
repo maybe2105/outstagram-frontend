@@ -4,9 +4,9 @@ export const DashboardContainer = styled.div`
   width: 100%;
   padding-top: 84px;
   margin: auto;
-  display: grid;
+  display: flex;
+  flex-direction: row;
   top: 54px;
-  grid-template-columns: 70% 30%;
 `;
 export const DashboardNav = styled.div`
   height: 54px;

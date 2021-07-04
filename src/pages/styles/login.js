@@ -38,9 +38,9 @@ export const LoginStyleLoginSection = styled.div`
   padding: 10px 0;
   flex-grow: 1;
 `;
-export const LoginStyleLogo = styled.div`
+export const LoginStyleLogo = styled.img`
   margin: 22px auto 5px;
-  background-image: url('https://www.instagram.com/static/bundles/es6/sprite_core_b20f2a3cd7e4.png/b20f2a3cd7e4.png');
+  src: url(../logo_large.png) no-repeat center center fixed;
   background-position: -98px 0;
   height: 51px;
   width: 177px;

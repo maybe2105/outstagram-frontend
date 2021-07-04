@@ -65,7 +65,7 @@ const Login = () => {
       </LoginStyleFeature>
       <LoginStyleProfile>
         <LoginStyleLoginSection>
-          <LoginStyleLogo src={process.env.PUBLIC_URL + './images/logo.png'} />
+          <LoginStyleLogo src={process.env.PUBLIC_URL + './logo_large.png'} />
           <LoginStyleForm>
             {err && (
               <LoginStyleWrapField>
@@ -130,7 +130,7 @@ const Login = () => {
                 </LoginStyleSubmit>
               </Link>
             </LoginStyleSubmitDiv>
-            <LoginStyleWrapField>
+            {/* <LoginStyleWrapField>
               <LoginSeparator>
                 <LoginLine />
                 <p style={{ padding: '0px 18px' }}>OR</p>
@@ -140,7 +140,7 @@ const Login = () => {
             <LoginWithOther>
               <LoginStyleOtherAuth>Đăng nhập bằng Facebook</LoginStyleOtherAuth>
               <LoginStyleForgotPass>Quên mật khẩu?</LoginStyleForgotPass>
-            </LoginWithOther>
+            </LoginWithOther> */}
           </LoginStyleForm>
         </LoginStyleLoginSection>
         <LoginStyleSignupSection>

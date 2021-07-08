@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 import * as ROUTES from '../constants/route';
 
-export default function ProtectedRoute({ currentUser, children, ...rest }) {
+export default function ProtectedRoute({ children, ...rest }) {
+  const currentUser = localStorage.getItem('loggedInUser');
   return (
     <Route
       {...rest}
@@ -28,7 +29,8 @@ export default function ProtectedRoute({ currentUser, children, ...rest }) {
     />
   );
 }
-export function ProtectedLogin({ currentUser, children, ...rest }) {
+export function ProtectedLogin({ children, ...rest }) {
+  const currentUser = localStorage.getItem('loggedInUser');
   return (
     <Route
       {...rest}

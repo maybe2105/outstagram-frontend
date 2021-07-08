@@ -18,7 +18,7 @@ const Timeline = React.memo(({ posts }) => {
       </SkeletonMargin>
     </SkeletonContainer>
   ) : posts.length === 0 ? (
-    <p>Nothing to show</p>
+    <p style={{ width: 614 }}>Hãy theo dõi người khác để bắt đầu xem ảnh</p>
   ) : (
     <TimelineContainer>
       {posts.map((content) => (

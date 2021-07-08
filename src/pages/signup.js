@@ -34,14 +34,27 @@ const SignUp = () => {
   useEffect(() => {
     document.title = 'Login Instagram';
   }, []);
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+  };
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const handleChangeFullName = (e) => {
+    setfullName(e.target.value);
+  };
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value);
+  };
   const handleSignup = async (event) => {
     event.preventDefault();
     const user = { email, fullName, username, password };
-    console.log(user);
+
     try {
+      console.log(user);
       const result = await api.signUp(user);
       console.log(result);
-      usercontext.setUser(result.data.user);
+      usercontext.updateUser(result.data.user);
       console.log(user);
       localStorage.setItem('loggedInUser', JSON.stringify(result.data.user));
       localStorage.setItem('token', result.data.token);
@@ -52,7 +65,7 @@ const SignUp = () => {
       setPassword('');
       setfullName('');
       setName('');
-      setErr(error.message);
+      setErr(JSON.stringify(err));
     }
   };
   return (
@@ -106,9 +119,7 @@ const SignUp = () => {
                   fontSize='small'
                   size='small'
                   color='primary'
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                  }}
+                  onChange={(event) => handleChangeEmail(event)}
                 />
               </LoginStyleField>
             </LoginStyleWrapField>
@@ -122,9 +133,7 @@ const SignUp = () => {
                   name='fullName'
                   label-color='#fff'
                   margin='none'
-                  onChange={(event) => {
-                    setfullName(event.target.value);
-                  }}
+                  onChange={(event) => handleChangeFullName(event)}
                 ></TextField>
               </LoginStyleField>
             </LoginStyleWrapField>
@@ -139,9 +148,7 @@ const SignUp = () => {
                   name='name'
                   label-color='#fff'
                   margin='none'
-                  onChange={(event) => {
-                    setName(event.target.value);
-                  }}
+                  onChange={(event) => handleChangeName(event)}
                 ></TextField>
               </LoginStyleField>
             </LoginStyleWrapField>
@@ -155,9 +162,7 @@ const SignUp = () => {
                   name='password'
                   label-color='#fff'
                   margin='none'
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                  }}
+                  onChange={(event) => handleChangePassword(event)}
                 ></TextField>
               </LoginStyleField>
             </LoginStyleWrapField>

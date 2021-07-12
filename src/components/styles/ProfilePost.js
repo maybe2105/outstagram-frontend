@@ -1,8 +1,9 @@
 import styled from 'styled-components/macro';
 export const ProfilePostContainer = styled.div`
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 33% 33% 33%;
   grid-gap: 28px;
+  margin-bottom: 16px;
 `;
 export const PostInfo = styled.div`
   display: none;

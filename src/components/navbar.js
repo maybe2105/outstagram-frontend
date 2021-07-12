@@ -1,5 +1,5 @@
-import { IconButton, InputBase } from '@material-ui/core';
-import React, { useContext } from 'react';
+import { Fade, IconButton, InputBase, Typography } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 
 import * as api from '../api/index';
@@ -60,6 +60,10 @@ const useStyles = makeStyles((theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    typography: {
+      marginLeft: 12,
+      fontSize: 14,
+    },
     inputRoot: {
       fontSize: '14px',
       height: '100%',
@@ -88,15 +92,21 @@ const useStyles = makeStyles((theme) =>
     small: { width: theme.spacing(3), height: theme.spacing(3) },
   })
 );
-const Navbar = ({ user }) => {
+const Navbar = ({ username, updated }) => {
   const history = useHistory();
   const classes = useStyles();
+  const [user, setUser] = useState(null);
   const { updateUser } = useContext(UserContext);
+  const [searchList, setSearchList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
+  const token = localStorage.getItem('token');
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openSearch, setOpenSearch] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
@@ -104,13 +114,40 @@ const Navbar = ({ user }) => {
 
     setOpen(false);
   };
-
+  useEffect(() => {
+    const getUser = async (username) => {
+      try {
+        const result = await api.getUserByUserId(username);
+        setUser(result.data);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+    getUser(username);
+  }, [updateUser.user, updated]);
   function handleListKeyDown(event) {
     if (event.key === 'Tab') {
       event.preventDefault();
       setOpen(false);
     }
   }
+  const handleSearchType = async (event) => {
+    try {
+      const result = await api.searchChange(event.target.value);
+
+      setSearchList(result.data);
+    } catch (err) {}
+  };
+
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpenSearch((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+  const handleCloseAnchor = () => {
+    setAnchorEl(null);
+    setOpenSearch(false);
+  };
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -119,7 +156,7 @@ const Navbar = ({ user }) => {
 
     prevOpen.current = open;
   }, [open]);
-  console.log('navbar');
+
   return user ? (
     <DashboardNav>
       <DashboardLogo>
@@ -137,25 +174,69 @@ const Navbar = ({ user }) => {
         </Link>
       </DashboardLogo>
       <div className={classes.maxSearch}>
-        <div className={classes.search}>
+        <Popper
+          style={{ zIndex: 1000 }}
+          open={openSearch}
+          anchorEl={anchorEl}
+          placement={placement}
+          transition
+        >
+          {({ TransitionProps }) =>
+            searchList
+              .filter((data) => data.username != user.username)
+              .slice(0, 3)
+              .map((data) => {
+                return (
+                  <Fade {...TransitionProps} timeout={350}>
+                    <Paper
+                      onClick={() => history.push(data.username)}
+                      style={{ display: 'flex', width: '250px', height: 60 }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'left',
+                          marginLeft: 12,
+                        }}
+                      >
+                        <Avatar className={classes.small} src={data.avatar} />
+                        <Typography className={classes.typography}>
+                          {data.username}
+                        </Typography>
+                      </div>
+                    </Paper>
+                  </Fade>
+                );
+              })
+          }
+        </Popper>
+        <div className={classes.search} onClick={handleClick('bottom')}>
           <div className={classes.searchIcon}>
             <SearchIcon />
           </div>
           <InputBase
             placeholder='Search'
+            onChange={handleSearchType}
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
             }}
+            onBlur={() => handleCloseAnchor()}
             inputProps={{ 'aria-label': 'search' }}
           />
         </div>
       </div>
       <DashboardNavItem>
-        <IconButton color='default'>
+        <IconButton
+          color='default'
+          onClick={() => {
+            history.push(ROUTE.LOGIN);
+          }}
+        >
           <HomeRoundedIcon />
         </IconButton>
-        <IconButton>
+        {/* <IconButton>
           <TelegramIcon />
         </IconButton>
         <IconButton>
@@ -163,7 +244,7 @@ const Navbar = ({ user }) => {
         </IconButton>
         <IconButton>
           <FavoriteRoundedIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}

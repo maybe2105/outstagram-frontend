@@ -40,14 +40,21 @@ const Login = () => {
     console.log(userEmail, userPassword);
     if (!checkValid(isInvalid)) {
       try {
-        const { data } = await api.login(userEmail, userPassword);
+        const response = await api.login(userEmail, userPassword);
+        console.log('response', response);
+        const { data = {} } = response || {};
         contextuser.updateUser(data.user);
         localStorage.setItem('loggedInUser', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
         history.push('/');
-      } catch (err) {
-        console.log(err);
-        setErr(err.message);
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          if (error.response.status === 406) setErr('Sai mật khẩu');
+          else if (error.response.status == 404)
+            setErr('Tài khoản không tồn tại');
+          else setErr(error.response.data.message);
+        }
       }
     } else {
       setErr('Email or password must not be Empty');

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   PostContainer,
   PostUser,
@@ -29,6 +29,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineOutlined';
 import CommentComponent from '../components/comment';
 import * as api from '../api/index';
+import { useHistory } from 'react-router-dom';
+import LoggedInUserContext from '../context/logged-in-user';
+import UserContext from '../context/user';
 const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(4),
@@ -43,17 +46,43 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
 }));
-const Post = ({ content }) => {
+const Post = ({ content, onClickPost }) => {
+  const history = useHistory();
   const [post, setPost] = useState(content);
+  const [comment, setComment] = useState('');
   const classes = useStyles();
+  const { currentUser } = useContext(UserContext);
+  const loggedContext = useContext(LoggedInUserContext);
   const timeCreated = formatDistance(new Date(), new Date(content.createAt));
   const token = localStorage.getItem('token');
-  const handlePostComment = () => {};
+  const [postComments, setPostComments] = useState([]);
+  const [postUsername, setPostUsername] = useState(content.username);
+  useEffect(() => {
+    setPostComments(content?.comments);
+  }, [content]);
+
+  const handlePostComment = async (event) => {
+    event.preventDefault();
+    const res = await api.postComment(post._id, comment, token);
+    const newComment = {
+      username: currentUser.user.username,
+      comment: comment,
+    };
+
+    setPostComments([...postComments, newComment]);
+
+    setComment('');
+  };
+  const handleComment = (event) => {
+    setComment(event.target.value);
+  };
   const handleReact = async () => {
     const res = await api.PostReact(post._id, token);
+    console.log('handleReact', res);
     setPost({ ...res.data.post, userLikedPhoto: !post.userLikedPhoto });
+    console.log('captions', post.username);
+    loggedContext.handleUpdate();
   };
-  console.log('PostComment ', post.comments);
   const [avatar, setAvatar] = useState(null);
   useEffect(() => {
     const getAvatar = async (userid) => {
@@ -62,6 +91,7 @@ const Post = ({ content }) => {
         result.avatar === ''
           ? setAvatar(process.env.PUBLIC_URL + 'no-img.jpg')
           : setAvatar(result.avatar);
+        setPostUsername(result.data.username);
       } catch (err) {}
     };
     getAvatar(content.userId);
@@ -69,11 +99,17 @@ const Post = ({ content }) => {
   return (
     <PostContainer>
       <PostUser>
-        <Avatar alt='avatar' className={classes.small} src={avatar} />
+        <IconButton onClick={() => history.push(`/${content.username}`)}>
+          <Avatar alt='avatar' className={classes.small} src={avatar} />
+        </IconButton>
         <PostUserName>{content.username}</PostUserName>
       </PostUser>
       <PostBody>
-        <PostImage src={post.photoSrcs[0]} atl={post.username} />
+        <PostImage
+          onClick={() => onClickPost(content)}
+          src={post.photoSrcs[0]}
+          atl={post.username}
+        />
         <PostReact>
           <IconButton
             color='inherit'
@@ -90,11 +126,11 @@ const Post = ({ content }) => {
           </LikeCount>
         </PostLike>
         <CaptionSection>
-          <CommentName>{post.username}</CommentName>
+          <CommentName>{postUsername}</CommentName>
           <Comment>{post.captions}</Comment>
         </CaptionSection>
         <PostCommentSection>
-          {post.comments.map((item, index) => {
+          {postComments.map((item, index) => {
             return (
               <CommentComponent
                 key={index}
@@ -113,8 +149,14 @@ const Post = ({ content }) => {
           <SentimentSatisfiedOutlinedIcon />
         </Emoji>
         <UserForm>
-          <UserInput type='text' />
-          <UserButton onClick={() => handlePostComment()}>Đăng</UserButton>
+          <UserInput
+            type='text'
+            value={comment}
+            onChange={(event) => handleComment(event)}
+          />
+          <UserButton onClick={(event) => handlePostComment(event)}>
+            Comment
+          </UserButton>
         </UserForm>
       </UserComment>
     </PostContainer>

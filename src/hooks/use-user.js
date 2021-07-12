@@ -8,7 +8,6 @@ const useUser = (user) => {
   useEffect(() => {
     user ? setloggedInUser(user) : setloggedInUser(loggedInUser);
     if (user?._id) {
-      console.log(user);
       setActiveUser(user);
 
       localStorage.setItem('loggedInUser', JSON.stringify(user));

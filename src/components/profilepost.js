@@ -22,11 +22,33 @@ const useStyles = makeStyles((theme) =>
     },
   })
 );
-const ProfilePost = ({ posts }) => {
+const ProfilePost = ({ posts, onClickPost }) => {
   const classes = useStyles();
   return (
     <ProfilePostContainer>
-      <Post>
+      {posts?.map((post) => {
+        return (
+          <Post onClick={() => onClickPost(post)}>
+            <PostImg src={post?.photoSrcs?.[0]} />
+            <PostInfo>
+              <PostInfoItem>
+                <FavoriteIcon className={classes.normal} />
+                <PostInfoItemText>
+                  {post?.reacts?.length > 0 ? post?.reacts?.length : 0}
+                </PostInfoItemText>
+              </PostInfoItem>
+              <PostInfoItem>
+                <ModeCommentIcon className={classes.normal} />
+                <PostInfoItemText>
+                  {post?.comments?.length > 0 ? post?.comments?.length : 0}
+                </PostInfoItemText>
+              </PostInfoItem>
+            </PostInfo>
+          </Post>
+        );
+      })}
+
+      {/* <Post>
         <PostImg
           src='https://images.ctfassets.net/hrltx12pl8hq/7yQR5uJhwEkRfjwMFJ7bUK/dc52a0913e8ff8b5c276177890eb0129/offset_comp_772626-opt.jpg?fit=fill&w=800&h=300'
           alt='img'
@@ -137,7 +159,7 @@ const ProfilePost = ({ posts }) => {
             <PostInfoItemText>4321</PostInfoItemText>
           </PostInfoItem>
         </PostInfo>
-      </Post>
+      </Post> */}
     </ProfilePostContainer>
   );
 };

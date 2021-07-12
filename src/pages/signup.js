@@ -65,7 +65,7 @@ const SignUp = () => {
       setPassword('');
       setfullName('');
       setName('');
-      setErr(JSON.stringify(err));
+      setErr(error.response.data.message);
     }
   };
   return (

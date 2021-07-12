@@ -13,7 +13,6 @@ const NotFound = lazy(() => import('./pages/notfound'));
 const App = () => {
   const [user, setUser] = useState(null);
   const value = { user, setUser };
-
   const updateUser = (newUser) => {
     setUser(newUser);
   };

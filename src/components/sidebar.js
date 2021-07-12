@@ -1,5 +1,5 @@
-import { IconButton } from '@material-ui/core';
-import React, { useContext } from 'react';
+import { IconButton, Link } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import {
@@ -10,8 +10,11 @@ import {
   SidebarUserFullname,
   SidebarName,
 } from './styles/sidebar';
+import * as api from '../api/index';
 import Suggestion from './suggestion';
 import LoggedInUserContext from '../context/logged-in-user';
+import { useHistory } from 'react-router-dom';
+import UserContext from '../context/user';
 const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(3),
@@ -22,14 +25,28 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(7),
   },
 }));
-const Sidebar = () => {
+const Sidebar = ({ username }) => {
   const classes = useStyles();
-  const { user } = useContext(LoggedInUserContext);
+  const [user, setUser] = useState();
+  const history = useHistory();
+  useEffect(() => {
+    const getUser = async (username) => {
+      try {
+        const result = await api.getUserByUserId(username);
+        console.log('navbar result', result);
+        setUser(result.data);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+    getUser(username);
+  }, []);
+  console.log(user);
   return user ? (
     <SidebarContainer>
       <SidebarUser>
         <SidebarAvatar>
-          <IconButton>
+          <IconButton onClick={() => history.push(`/${user.username}`)}>
             <Avatar
               alt={user.displayName}
               className={classes.large}

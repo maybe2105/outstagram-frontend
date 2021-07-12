@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import {
@@ -7,7 +7,25 @@ import {
   SkeletonMargin,
 } from './styles/post';
 import Post from './post';
-const Timeline = React.memo(({ posts }) => {
+import DetailedPost from './detailedPost';
+import { Slide } from '@material-ui/core';
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
+});
+
+const Timeline = React.memo(({ posts, handleUpdate }) => {
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [openPost, setOpenPost] = useState(false);
+  const onClickPost = (post) => {
+    console.log('post Id', post._id);
+    setSelectedPost(post._id);
+    setOpenPost(true);
+  };
+  const handleClosePost = () => {
+    setSelectedPost(null);
+    setOpenPost(false);
+  };
+
   return !posts ? (
     <SkeletonContainer>
       <SkeletonMargin>
@@ -20,11 +38,22 @@ const Timeline = React.memo(({ posts }) => {
   ) : posts.length === 0 ? (
     <p style={{ width: 614 }}>Hãy theo dõi người khác để bắt đầu xem ảnh</p>
   ) : (
-    <TimelineContainer>
-      {posts.map((content) => (
-        <Post key={content._id} content={content} />
-      ))}
-    </TimelineContainer>
+    <>
+      <TimelineContainer>
+        {posts.map((content) => (
+          <Post key={content._id} content={content} onClickPost={onClickPost} />
+        ))}
+      </TimelineContainer>
+      {openPost && (
+        <DetailedPost
+          open={openPost}
+          handleClose={handleClosePost}
+          selectedPostId={selectedPost}
+          transition={Transition}
+          handleUpdate={handleUpdate}
+        />
+      )}
+    </>
   );
 });
 

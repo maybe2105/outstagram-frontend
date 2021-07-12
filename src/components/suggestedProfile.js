@@ -13,6 +13,7 @@ import * as api from '../api/index';
 import { makeStyles } from '@material-ui/core/styles';
 import UserContext from '../context/user';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(4),
@@ -33,6 +34,7 @@ const ProfileComponent = ({
   trigger,
   setTrigger,
 }) => {
+  const history = useHistory();
   const classes = useStyles();
   const { currentUser, updateUser } = useContext(UserContext);
   const token = localStorage.getItem('token');
@@ -53,7 +55,12 @@ const ProfileComponent = ({
   return !followed ? (
     <SuggestedProfile>
       <SuggestedAvatar>
-        <Avatar className={classes.small} alt={username} src={avatar} />
+        <Avatar
+          onClick={() => history.push(`/${username}`)}
+          className={classes.small}
+          alt={username}
+          src={avatar}
+        />
       </SuggestedAvatar>
       <SuggestWrap>
         <SuggestedUserName>{username}</SuggestedUserName>

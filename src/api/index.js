@@ -48,7 +48,7 @@ export const SuggestProfile = async (followings, token) => {
 export const FollowUser = async (targetId, token) => {
   return await API.put(
     '/account/follow',
-    { targetId },
+    { targetId: targetId },
     {
       headers: { authorization: 'Bearer '.concat(token) },
     }
@@ -58,4 +58,46 @@ export const getUserPosts = async (userId) => {
   const url = '/p/' + userId;
   const result = await API.get(url);
   console.log(result);
+};
+// prettier-ignore
+export const postComment = async (postId, comment, token) => {
+  const url = '/p/' + postId + '/comment';
+
+  const result = await API.put(
+    url,
+    { comment },
+    { headers: { authorization: 'Bearer '.concat(token) } }
+  );
+  return result;
+};
+
+export const postPhoto = async (formData, token) => {
+  const url = '/p/create';
+  const result = await API.post(url, formData, {
+    headers: { authorization: 'Bearer '.concat(token) },
+  });
+  console.log(result);
+  return result;
+};
+export const getPost = async (id) => {
+  const url = '/p/' + id;
+  const result = await API.get(url, { id: id });
+  return result;
+};
+export const changeAvatar = async (formData, token) => {
+  const url = '/account/change-avatar';
+  const result = await API.put(url, formData, {
+    headers: { authorization: 'Bearer '.concat(token) },
+  });
+  console.log(result);
+  return result;
+};
+
+export const searchChange = async (param) => {
+  const result = await API.get('/account/search', {
+    params: {
+      keyword: param,
+    },
+  });
+  return result;
 };

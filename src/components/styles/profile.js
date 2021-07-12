@@ -86,7 +86,7 @@ export const ProfileNav = styled.ul`
   margin: auto;
   justify-content: center;
 `;
-export const ProfileNavItem = styled(Link)`
+export const ProfileNavItem = styled.div`
   margin-right: 60px;
   height: 52px;
   font-size: 13px;
@@ -95,6 +95,8 @@ export const ProfileNavItem = styled(Link)`
   display: flex;
   color: #8e8e8e;
   align-items: center;
+  cursor: pointer;
+  outline: inherit;
   text-transform: uppercase;
 
   &:active {

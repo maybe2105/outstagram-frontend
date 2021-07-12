@@ -2,6 +2,7 @@ import styled from 'styled-components/macro';
 export const SidebarContainer = styled.div`
   display: flex;
   width: 287px;
+  position: 'sticky';
   padding-left: 20px;
   height: 100vh;
   top: 88px;

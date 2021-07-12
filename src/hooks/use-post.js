@@ -3,8 +3,9 @@ import { getPhotos } from '../services/services';
 import { useHistory } from 'react-router-dom';
 import * as ROUTE from '../constants/route';
 import UserContext from '../context/user';
-export default function usePost(user) {
+export default function usePost(user, updated) {
   const { updateUser } = useContext(UserContext);
+
   const [photos, setPhotos] = useState(null);
   const history = useHistory();
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function usePost(user) {
             user.username,
             user.followings
           );
+
           // re-arrange array to be newest photos first by dateCreated
           if (followedUserPhotos?.length > 0) {
             followedUserPhotos.sort(
@@ -39,6 +41,6 @@ export default function usePost(user) {
     }
 
     getTimelinePhotos();
-  }, [user, updateUser]);
+  }, [user, updateUser, updated]);
   return { photos };
 }

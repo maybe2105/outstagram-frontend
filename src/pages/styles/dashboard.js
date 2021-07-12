@@ -3,6 +3,7 @@ export const DashboardContainer = styled.div`
   max-width: 935px;
   width: 100%;
   padding-top: 84px;
+  position: 'relative';
   margin: auto;
   display: flex;
   flex-direction: row;

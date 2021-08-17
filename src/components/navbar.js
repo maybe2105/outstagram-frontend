@@ -181,10 +181,10 @@ const Navbar = ({ username, updated }) => {
           placement={placement}
           transition
         >
-          {({ TransitionProps }) =>
-            searchList
+          {({ TransitionProps }) => {
+            /* searchList
               .filter((data) => data.username != user.username)
-              .slice(0, 3)
+              .slice(0, 4)
               .map((data) => {
                 return (
                   <Fade {...TransitionProps} timeout={350}>
@@ -208,8 +208,8 @@ const Navbar = ({ username, updated }) => {
                     </Paper>
                   </Fade>
                 );
-              })
-          }
+              }) */
+          }}
         </Popper>
         <div className={classes.search} onClick={handleClick('bottom')}>
           <div className={classes.searchIcon}>

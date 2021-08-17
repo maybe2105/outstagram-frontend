@@ -1,5 +1,46 @@
 import axios from 'axios';
-const API = axios.create({ baseURL: 'http://localhost:4000/' });
+const CancelToken = axios.CancelToken;
+let cancel;
+
+axios.interceptors.request.use(
+  (config) => {
+    if (cancel) {
+      cancel(); // cancel request
+    }
+
+    config.cancelToken = new CancelToken(function executor(c) {
+      cancel = c;
+    });
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+const API = axios.create({
+  baseURL: 'https://dainghia-outstagram.herokuapp.com',
+});
+
+export const searchChange = async (param) => {
+  const result = await API.get('/account/search', {
+    params: {
+      keyword: param,
+    },
+    cancelToken: new axios.CancelToken((c) => {
+      cancel = c;
+    }),
+  }).catch((err) => {
+    if (axios.isCancel(err)) {
+      console.log('im canceled');
+    } else {
+      console.log('im server response error');
+    }
+  });
+  return result;
+};
+if (cancel) cancel();
+
 export const login = async (email, password) =>
   await API.post('/account/signin', { email, password });
 export const getAuthUser = async (authToken) => {
@@ -90,14 +131,5 @@ export const changeAvatar = async (formData, token) => {
     headers: { authorization: 'Bearer '.concat(token) },
   });
   console.log(result);
-  return result;
-};
-
-export const searchChange = async (param) => {
-  const result = await API.get('/account/search', {
-    params: {
-      keyword: param,
-    },
-  });
   return result;
 };
